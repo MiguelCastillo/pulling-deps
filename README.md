@@ -9,7 +9,7 @@ var pulldeps = require('pullig-deps');
 
 // This gets us an object that has a property `dependencies`, which is an array
 // of all the dependencies found.
-var result = pulldeps('define(['amddep'], function() {require("cjsdep") {}}');
+var result = pulldeps('define(["amddep"], function() {require("cjsdep") {}}');
 
 // Print to console the dependencies, which will have `amddep` and `cjsdep`
 console.log(result.dependencies);
