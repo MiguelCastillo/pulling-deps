@@ -17,9 +17,12 @@
   var acorn = require('acorn'),
       walk  = require('acorn/util/walk');
 
-  function parse(source, options) {
+  function PullDeps(source, options) {
+    return PullDeps.walk(acorn.parse(source, options));
+  }
+
+  PullDeps.walk = function(ast) {
     var result = {dependencies: []};
-    var ast = acorn.parse(source, options);
 
     walk.simple(ast, {
       'CallExpression': function callExpression(node) {
@@ -38,7 +41,7 @@
     });
 
     return result;
-  }
+  };
 
 
   function isName(node, name) {
@@ -70,5 +73,5 @@
   }
 
 
-  module.exports = parse;
+  module.exports = PullDeps;
 })();
