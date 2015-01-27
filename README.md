@@ -24,7 +24,6 @@ is a method that takes in as its only parameter an AST as created by acorn.
 var acorn    = require('acorn');
 var pullDeps = require('pulling-deps');
 
-
 // Tell acorn to parse the source and give us back an AST.
 var ast = acorn('define(["amddep"], function() {require("cjsdep") {}}');
 
