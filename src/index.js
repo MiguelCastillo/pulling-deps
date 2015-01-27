@@ -17,27 +17,46 @@
   var acorn = require('acorn'),
       walk  = require('acorn/util/walk');
 
+  /**
+   * Method to pull dependencies from a JavaScript source string.
+   *
+   * @param {string} source - Source to parse
+   * @param {object} options - Options passed to acorn
+   *
+   * @returns {object:{array: dependencies}} - Object with dependencies
+   */
   function PullDeps(source, options) {
     return PullDeps.walk(acorn.parse(source, options));
   }
 
+
+  /**
+   * Method to pull dependencies from an AST.
+   *
+   * @param {object} ast - AST to traverse in order to find all dependencies.
+   *
+   * @returns {object:{array: dependencies}} - Object with dependencies
+   */
   PullDeps.walk = function(ast) {
     var result = {dependencies: []};
 
-    walk.simple(ast, {
-      'CallExpression': function callExpression(node) {
-        if (isName(node.callee, TokenTypes._require)) {
-          if (isDependencyString(node.arguments)) {
-            result.dependencies.push(node.arguments[0].value);
-          }
-        }
-        else if (isName(node.callee, TokenTypes._define)) {
-          var dependencies = getDependencyArray(node.arguments);
-          if (dependencies && dependencies.length) {
-            result.dependencies = result.dependencies.concat(dependencies);
-          }
+    function callExpression(node) {
+      if (isName(node.callee, TokenTypes._require)) {
+        var dependency = getDependencyString(node.arguments);
+        if (dependency) {
+          result.dependencies.push(dependency);
         }
       }
+      else if (isName(node.callee, TokenTypes._define)) {
+        var dependencies = getDependencyArray(node.arguments);
+        if (dependencies && dependencies.length) {
+          result.dependencies = result.dependencies.concat(dependencies);
+        }
+      }
+    }
+
+    walk.simple(ast, {
+      'CallExpression': callExpression
     });
 
     return result;
@@ -49,17 +68,22 @@
   }
 
 
-  function isDependencyString(node) {
-    return node.length === 1 && TokenTypes.Literal === node[0].type;
+  function getDependencyString(nodes) {
+    if (nodes.length === 1 && TokenTypes.Literal === nodes[0].type) {
+      return nodes[0].value;
+    }
   }
 
 
   function getDependencyArray(nodes) {
     var elements, i, length;
-    if (nodes[0] && nodes[0].type === TokenTypes.ArrayExpression) {
+
+    // Handle define([], function() {}) format
+    if (isArrayExpession(nodes[0])) {
       elements = nodes[0].elements;
     }
-    else if (nodes[1] && nodes[1].type === TokenTypes.ArrayExpression) {
+    // Handle define("modulename", [], function() {}) format
+    else if (isArrayExpession(nodes[1])) {
       elements = nodes[1].elements;
     }
 
@@ -70,6 +94,11 @@
     }
 
     return elements;
+  }
+
+
+  function isArrayExpession(node) {
+    return node && TokenTypes.ArrayExpression === node.type;
   }
 
 
