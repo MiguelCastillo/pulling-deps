@@ -67,7 +67,7 @@ module.exports = function(grunt) {
         options: {
           browserifyOptions: {
             'detectGlobals': false,
-            'standalone': 'index'
+            'standalone': 'pullingdeps'
           }
         }
       }
