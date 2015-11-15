@@ -1,6 +1,6 @@
 {
   "name": "pulling-deps",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "src/index.js",
   "scripts": {
     "prepublish": "grunt build",
@@ -27,8 +27,7 @@
     "requirejs": "~2.1.20",
     "sinon": "~1.17.2"
   },
-  "browser": {
-  },
+  "browser": {},
   "directories": {
     "test": "test"
   },
