@@ -1,5 +1,5 @@
 var acorn = require('acorn');
-var walk  = require('acorn-walk');
+var walk  = require('acorn/dist/walk');
 
 
 var TokenTypes = {

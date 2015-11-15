@@ -28,8 +28,6 @@
     "sinon": "~1.17.2"
   },
   "browser": {
-    "acorn": "./node_modules/acorn/dist/acorn.js",
-    "acorn-walk": "./node_modules/acorn/dist/walk.js"
   },
   "directories": {
     "test": "test"
