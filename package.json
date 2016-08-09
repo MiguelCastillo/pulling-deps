@@ -7,7 +7,8 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "acorn": "~2.6.4"
+    "acorn": "~2.6.4",
+    "belty": "^4.0.3"
   },
   "devDependencies": {
     "babelify": "^7.2.0",

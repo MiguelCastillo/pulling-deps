@@ -1,3 +1,4 @@
+var utils = require('belty');
 var acorn = require('acorn');
 var walk  = require('acorn/dist/walk');
 
@@ -59,7 +60,16 @@ function getDependencyArray(nodes) {
  * @returns {object:{array: dependencies}} - Object with dependencies
  */
 function PullDeps(source, options) {
-  return PullDeps.walk(acorn.parse(source, options));
+  options = utils.extend({ cjs: true, amd: true }, options);
+
+  // Make sure we search for require statements before we go in and tear things apart.
+  // if (source && /require\s*\(['"\s]+([^'"]+)['"\s]+\)\s*/g.test(source)) {
+  //   dependencies = PullDeps.walk(acorn.parse(source, options.options), options);
+  // }
+
+  return {
+    dependencies: PullDeps.walk(acorn.parse(source, options.options), options)
+  };
 }
 
 
@@ -70,20 +80,20 @@ function PullDeps(source, options) {
  *
  * @returns {object:{array: dependencies}} - Object with dependencies
  */
-PullDeps.walk = function(ast) {
-  var result = {dependencies: []};
+PullDeps.walk = function(ast, options) {
+  var dependencies = [];
 
   function callExpression(node) {
-    if (isName(node.callee, TokenTypes._require)) {
+    if (options.cjs && isName(node.callee, TokenTypes._require)) {
       var dependency = getDependencyString(node.arguments);
       if (dependency) {
-        result.dependencies.push(dependency);
+        dependencies.push(dependency);
       }
     }
-    else if (isName(node.callee, TokenTypes._define)) {
-      var dependencies = getDependencyArray(node.arguments);
-      if (dependencies && dependencies.length) {
-        result.dependencies = result.dependencies.concat(dependencies);
+    else if (options.amd && isName(node.callee, TokenTypes._define)) {
+      var deps = getDependencyArray(node.arguments);
+      if (deps && deps.length) {
+        dependencies = dependencies.concat(deps);
       }
     }
   }
@@ -92,7 +102,7 @@ PullDeps.walk = function(ast) {
     'CallExpression': callExpression
   });
 
-  return result;
+  return dependencies;
 };
 
 
