@@ -3,6 +3,48 @@ define(["dist/index", "sinon"], function(pulldeps/*, sinon*/) {
   describe("Test suite", function() {
     var dependecies;
 
+    describe.only("When parsing a single `import` with the default named export ", function() {
+      beforeEach(function() {
+        dependecies = pulldeps("import test from 'test'").dependencies;
+      });
+
+      it("then dependencies length is `1`", function() {
+        expect(dependecies.length).to.equal(1);
+      });
+
+      it("then dependencies[0] is `test`", function() {
+        expect(dependecies[0]).to.equal("test");
+      });
+    });
+
+    describe.only("When parsing a single `import` with an aliased named export", function() {
+      beforeEach(function() {
+        dependecies = pulldeps("import { test as t } from 'test'").dependencies;
+      });
+
+      it("then dependencies length is `1`", function() {
+        expect(dependecies.length).to.equal(1);
+      });
+
+      it("then dependencies[0] is `test`", function() {
+        expect(dependecies[0]).to.equal("test");
+      });
+    });
+
+    describe.only("When parsing a single `import` with no named export", function() {
+      beforeEach(function() {
+        dependecies = pulldeps("import 'test'").dependencies;
+      });
+
+      it("then dependencies length is `1`", function() {
+        expect(dependecies.length).to.equal(1);
+      });
+
+      it("then dependencies[0] is `test`", function() {
+        expect(dependecies[0]).to.equal("test");
+      });
+    });
+
     describe("When parsing single `require`", function() {
       beforeEach(function() {
         dependecies = pulldeps("require('test')").dependencies;
