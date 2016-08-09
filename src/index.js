@@ -4,11 +4,12 @@ var walk  = require('acorn/dist/walk');
 
 
 var TokenTypes = {
-  _define         : 'define',
-  _require        : 'require',
-  Identifier      : 'Identifier',
-  Literal         : 'Literal',
-  ArrayExpression : 'ArrayExpression'
+  _define          : 'define',
+  _require         : 'require',
+  Identifier       : 'Identifier',
+  Literal          : 'Literal',
+  ArrayExpression  : 'ArrayExpression',
+  ImportDeclaration: 'ImportDeclaration'
 };
 
 
@@ -60,7 +61,13 @@ function getDependencyArray(nodes) {
  * @returns {object:{array: dependencies}} - Object with dependencies
  */
 function PullDeps(source, options) {
-  options = utils.extend({ cjs: true, amd: true }, options);
+  options = utils.merge({
+    cjs: true,
+    amd: true,
+    options: {
+      sourceType: 'module'
+    }
+  }, options);
 
   // Make sure we search for require statements before we go in and tear things apart.
   // if (source && /require\s*\(['"\s]+([^'"]+)['"\s]+\)\s*/g.test(source)) {
@@ -98,8 +105,15 @@ PullDeps.walk = function(ast, options) {
     }
   }
 
+  function importStatement(node) {
+    if (node.source.type === TokenTypes.Literal) {
+      dependencies.push(node.source.value);
+    }
+  }
+
   walk.simple(ast, {
-    'CallExpression': callExpression
+    'CallExpression': callExpression,
+    'ImportDeclaration': importStatement
   });
 
   return dependencies;

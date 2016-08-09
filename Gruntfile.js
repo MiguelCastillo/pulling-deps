@@ -15,10 +15,10 @@ module.exports = function(grunt) {
       },
       keepalive: {
         options: {
-          port: 8929,
+          port: 29290,
           host: 'localhost',
           keepalive: true,
-          open: 'http://localhost:8929/test/SpecRunner.html'
+          open: 'http://localhost:29290/test/SpecRunner.html'
         }
       }
     },
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
         files: ['src/**/*.js', 'test/**/*.js', '*.js'],
         tasks: ['jshint:all', 'browserify:build'],
         options: {
-          livereload: true
+          livereload: 32012
         }
       }
     },
