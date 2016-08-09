@@ -3,7 +3,7 @@ define(["dist/index", "sinon"], function(pulldeps/*, sinon*/) {
   describe("Test suite", function() {
     var dependecies;
 
-    describe.only("When parsing a single `import` with the default named export ", function() {
+    describe("When parsing a single `import` with the default named export ", function() {
       beforeEach(function() {
         dependecies = pulldeps("import test from 'test'").dependencies;
       });
@@ -17,7 +17,7 @@ define(["dist/index", "sinon"], function(pulldeps/*, sinon*/) {
       });
     });
 
-    describe.only("When parsing a single `import` with an aliased named export", function() {
+    describe("When parsing a single `import` with an aliased named export", function() {
       beforeEach(function() {
         dependecies = pulldeps("import { test as t } from 'test'").dependencies;
       });
@@ -31,7 +31,7 @@ define(["dist/index", "sinon"], function(pulldeps/*, sinon*/) {
       });
     });
 
-    describe.only("When parsing a single `import` with no named export", function() {
+    describe("When parsing a single `import` with no named export", function() {
       beforeEach(function() {
         dependecies = pulldeps("import 'test'").dependencies;
       });
