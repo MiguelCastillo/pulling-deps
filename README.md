@@ -16,7 +16,7 @@ npm install pulling-deps
 
 ## cli
 
-pulling-deps comes with a small cli that prints all the dependencies in a JavaScript file.
+pulling-deps comes with a small cli that prints all the dependencies in a JavaScript file. The focus is on printing modules that are processed as node module dependencies.  E.g. `require('path')` vs `require('./index.js')`.
 
 > The cli will remove duplicate dependencies from the output
 
