@@ -1,6 +1,6 @@
 {
   "name": "pulling-deps",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "main": "src/index.js",
   "bin": {
     "jsdeps": "./bin/cli.js"
@@ -31,9 +31,7 @@
     "requirejs": "~2.3.2",
     "sinon": "~1.17.6"
   },
-  "browser": {
-    
-  },
+  "browser": {},
   "directories": {
     "test": "test"
   },
