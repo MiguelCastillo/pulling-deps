@@ -16,6 +16,8 @@ npm install pulling-deps
 
 pulling-deps comes with a small cli that prints all the dependencies in a JavaScript file.
 
+> The cli will remove duplicate dependencies from the output
+
 
 ### extracts dependencies from a file. You can pass multiple files
 
