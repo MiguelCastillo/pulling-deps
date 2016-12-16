@@ -33,7 +33,7 @@
   "directories": {
     "test": "test"
   },
-  "description": "Pull CJS and AMD dependencies from JavaScript source via AST",
+  "description": "Pull CJS require, AMD define, and ES2015 import dependencies from JavaScript via AST",
   "repository": {
     "type": "git",
     "url": "https://github.com/MiguelCastillo/pulling-deps.git"
