@@ -2,7 +2,9 @@
   "name": "pulling-deps",
   "version": "0.2.0",
   "main": "src/index.js",
-  "bin" : { "jsdeps" : "./bin/cli.js" },
+  "bin": {
+    "jsdeps": "./bin/cli.js"
+  },
   "scripts": {
     "prepublish": "grunt build",
     "test": "grunt test"
@@ -29,7 +31,9 @@
     "requirejs": "~2.2.0",
     "sinon": "~1.17.5"
   },
-  "browser": {},
+  "browser": {
+    
+  },
   "directories": {
     "test": "test"
   },
