@@ -105,7 +105,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.registerTask('build', ['jshint:all', 'browserify:build', 'uglify:build']);
+  grunt.registerTask('build', ['browserify:build', 'uglify:build']);
   grunt.registerTask('server', ['connect:keepalive']);
   grunt.registerTask('test', ['connect:test', 'mocha:test']);
   grunt.registerTask('livereload', ['concurrent:test']);
