@@ -9,6 +9,9 @@
     "prepublish": "grunt build",
     "test": "grunt test"
   },
+  "engine": {
+    "node": ">=4"
+  },
   "dependencies": {
     "acorn": "~4.0.3",
     "belty": "^4.0.3"
