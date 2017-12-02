@@ -9,6 +9,9 @@
     "prepublish": "grunt build",
     "test": "mocha --compilers js:babel-register"
   },
+  "engine": {
+    "node": ">=4"
+  },
   "dependencies": {
     "acorn": "~5.2.1",
     "belty": "^5.1.0"
