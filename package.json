@@ -7,29 +7,38 @@
   },
   "scripts": {
     "prepublish": "grunt build",
-    "test": "grunt test"
+    "test": "mocha --compilers js:babel-register"
   },
   "dependencies": {
-    "acorn": "~4.0.3",
-    "belty": "^4.0.3"
+    "acorn": "~5.2.1",
+    "belty": "^5.1.0"
   },
   "devDependencies": {
-    "babelify": "^7.3.0",
-    "browserify": "~13.1.1",
-    "chai": "~3.5.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "babelify": "^8.0.0",
+    "browserify": "~14.5.0",
+    "chai": "~4.1.2",
+    "eslint": "^4.12.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
     "grunt": "~1.0.1",
-    "grunt-browserify": "~5.0.0",
+    "grunt-browserify": "~5.2.0",
     "grunt-concurrent": "~2.3.1",
     "grunt-contrib-connect": "~1.0.2",
     "grunt-contrib-jshint": "~1.1.0",
-    "grunt-contrib-uglify": "~2.0.0",
+    "grunt-contrib-uglify": "~3.2.1",
     "grunt-contrib-watch": "~1.0.0",
-    "grunt-mocha": "~1.0.2",
+    "grunt-mocha": "~1.0.4",
     "grunt-release": "^0.14.0",
     "jshint-stylish": "~2.2.1",
-    "mocha": "~3.2.0",
-    "requirejs": "~2.3.2",
-    "sinon": "~1.17.6"
+    "mocha": "~4.0.1",
+    "requirejs": "~2.3.5",
+    "sinon": "~4.1.2"
   },
   "browser": {},
   "directories": {
