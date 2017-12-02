@@ -1,56 +1,43 @@
 var utils = require('belty');
 var acorn = require('acorn');
-var walk  = require('acorn/dist/walk');
-
+var walk = require('acorn/dist/walk');
 
 var TokenTypes = {
-  _define          : 'define',
-  _require         : 'require',
-  Identifier       : 'Identifier',
-  Literal          : 'Literal',
-  ArrayExpression  : 'ArrayExpression',
+  Identifier: 'Identifier',
+  Literal: 'Literal',
+  ArrayExpression: 'ArrayExpression',
   ImportDeclaration: 'ImportDeclaration'
 };
 
+var TokenNames = {
+  _define: 'define',
+  _require: 'require'
+};
 
-function isArrayExpession(node) {
+function isArrayExpession (node) {
   return node && TokenTypes.ArrayExpression === node.type;
 }
 
-
-function isName(node, name) {
+function isName (node, name) {
   return TokenTypes.Identifier === node.type && name === node.name;
 }
 
-
-function getDependencyString(nodes) {
+function getDependencyString (nodes) {
   if (nodes.length === 1 && TokenTypes.Literal === nodes[0].type) {
     return nodes[0].value;
   }
 }
 
+function getDependencyArray (nodes) {
+  var deps = (
+    isArrayExpession(nodes[0]) ? nodes[0].elements : // Handle things like define([], function() {}) format
+    isArrayExpession(nodes[1]) ? nodes[1].elements : [] // Handle things define("modulename", [], function() {}) format
+  );
 
-function getDependencyArray(nodes) {
-  var elements, i, length;
-
-  // Handle define([], function() {}) format
-  if (isArrayExpession(nodes[0])) {
-    elements = nodes[0].elements;
-  }
-  // Handle define("modulename", [], function() {}) format
-  else if (isArrayExpession(nodes[1])) {
-    elements = nodes[1].elements;
-  }
-
-  if (elements) {
-    for (i = 0, length = elements.length; i < length; i++) {
-      elements[i] = elements[i].value;
-    }
-  }
-
-  return elements;
+  return deps.map(function (dep) {
+    return dep.value;
+  });
 }
-
 
 /**
  * Method to pull dependencies from a JavaScript source string.
@@ -60,7 +47,7 @@ function getDependencyArray(nodes) {
  *
  * @returns {object:{array: dependencies}} - Object with dependencies
  */
-function PullDeps(source, options) {
+function PullDeps (source, options) {
   options = utils.merge({
     cjs: true,
     amd: true,
@@ -79,7 +66,6 @@ function PullDeps(source, options) {
   };
 }
 
-
 /**
  * Method to pull dependencies from an AST.
  *
@@ -87,25 +73,25 @@ function PullDeps(source, options) {
  *
  * @returns {object:{array: dependencies}} - Object with dependencies
  */
-PullDeps.walk = function(ast, options) {
+PullDeps.walk = function (ast, options) {
   var dependencies = [];
 
-  function callExpression(node) {
-    if (options.cjs && isName(node.callee, TokenTypes._require)) {
-      var dependency = getDependencyString(node.arguments);
-      if (dependency) {
-        dependencies.push(dependency);
-      }
+  function callExpression (node) {
+    var deps;
+
+    if (options.cjs && isName(node.callee, TokenNames._require)) {
+      deps = getDependencyString(node.arguments);
     }
-    else if (options.amd && isName(node.callee, TokenTypes._define)) {
-      var deps = getDependencyArray(node.arguments);
-      if (deps && deps.length) {
-        dependencies = dependencies.concat(deps);
-      }
+    else if (options.amd && isName(node.callee, TokenNames._define)) {
+      deps = getDependencyArray(node.arguments);
+    }
+
+    if (deps && deps.length) {
+      dependencies = dependencies.concat(deps);
     }
   }
 
-  function importStatement(node) {
+  function importStatement (node) {
     if (node.source.type === TokenTypes.Literal) {
       dependencies.push(node.source.value);
     }
@@ -118,6 +104,5 @@ PullDeps.walk = function(ast, options) {
 
   return dependencies;
 };
-
 
 module.exports = PullDeps;

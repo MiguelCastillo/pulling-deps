@@ -1,3 +1,17 @@
 {
-    "extends": "standard"
+    "extends": "standard",
+
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "env": {
+        "browser": true,
+        "commonjs": true
+    },
+    "rules": {
+        "semi": 0,
+        "operator-linebreak": 0,
+        "brace-style": 0,
+        "indent": 0
+    }
 }
