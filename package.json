@@ -10,26 +10,26 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "acorn": "~4.0.3",
-    "belty": "^4.0.3"
+    "acorn": "~5.2.1",
+    "belty": "^5.1.0"
   },
   "devDependencies": {
-    "babelify": "^7.3.0",
-    "browserify": "~13.1.1",
-    "chai": "~3.5.0",
+    "babelify": "^8.0.0",
+    "browserify": "~14.5.0",
+    "chai": "~4.1.2",
     "grunt": "~1.0.1",
-    "grunt-browserify": "~5.0.0",
+    "grunt-browserify": "~5.2.0",
     "grunt-concurrent": "~2.3.1",
     "grunt-contrib-connect": "~1.0.2",
     "grunt-contrib-jshint": "~1.1.0",
-    "grunt-contrib-uglify": "~2.0.0",
+    "grunt-contrib-uglify": "~3.2.1",
     "grunt-contrib-watch": "~1.0.0",
     "grunt-mocha": "~1.0.2",
     "grunt-release": "^0.14.0",
     "jshint-stylish": "~2.2.1",
-    "mocha": "~3.2.0",
+    "mocha": "~4.0.1",
     "requirejs": "~2.3.2",
-    "sinon": "~1.17.6"
+    "sinon": "~4.1.2"
   },
   "browser": {},
   "directories": {
