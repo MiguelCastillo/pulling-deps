@@ -1,4 +1,6 @@
 # pulling-deps
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/MiguelCastillo/pulling-deps.svg)](https://greenkeeper.io/)
 > Pull CJS require, AMD define, and ES2015 import JavaScript dependencies
 
 [![Build Status](https://travis-ci.org/MiguelCastillo/pulling-deps.svg)](https://travis-ci.org/MiguelCastillo/pulling-deps)
