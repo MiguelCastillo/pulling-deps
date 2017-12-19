@@ -22,7 +22,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
     "babelify": "^8.0.0",
-    "bit-bundler": "^8.0.3",
+    "bit-bundler": "^9.0.0",
     "bit-bundler-extractsm": "^2.1.1",
     "bit-bundler-minifyjs": "^3.0.3",
     "bit-loader-babel": "^2.0.0",
