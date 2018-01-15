@@ -1,9 +1,9 @@
 # pulling-deps
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/MiguelCastillo/pulling-deps.svg)](https://greenkeeper.io/)
-> Pull CJS require, AMD define, and ES2015 import JavaScript dependencies
-
 [![Build Status](https://travis-ci.org/MiguelCastillo/pulling-deps.svg)](https://travis-ci.org/MiguelCastillo/pulling-deps)
+
+> Pull CJS require, AMD define, as well as ESM dynamic and static imports.
 
 pulling-deps accomplishes this by building and traversing an AST leveraging [acorn](http://marijnhaverbeke.nl/acorn/).
 
@@ -48,13 +48,17 @@ $ npm install --save `jsdeps -f src/*.js`
 is a method that takes in a JavaScript string source as the first parameter, and an optional object as the second paramter.  The second parameter is an object that is pass straight to [acorn](http://marijnhaverbeke.nl/acorn/).
 
 ```javascript
-var pullDeps = require('pullig-deps');
+const pullDeps = require('pullig-deps');
 
 // This gets us an object that has a property `dependencies`, which is an array
 // of all the dependencies found.
-var result = pullDeps('define(["amddep"], function() {require("cjsdep") {}}');
+const result = pullDeps.fromSource(`
+  import a from "esmdep";
+  const b = require("cjsdep");
+  import("dynamicESM");
+`);
 
-// Print to console the dependencies, which will have `amddep` and `cjsdep`
+// Print to console the dependencies, which will have `esmdep`, `cjsdep`, and `dynamicESM`.
 console.log(result.dependencies);
 ```
 
@@ -62,16 +66,17 @@ console.log(result.dependencies);
 is a method that takes in as its only parameter an AST as created by acorn.
 
 ```javascript
-var acorn    = require('acorn');
-var pullDeps = require('pulling-deps');
-
-// Tell acorn to parse the source and give us back an AST.
-var ast = acorn('define(["amddep"], function() {require("cjsdep") {}}');
+const acorn = require('acorn-dynamic-import/lib/inject').default(require('acorn'));
+const pullDeps = require('pulling-deps');
 
 // Walk the AST to get all the dependencies out
-var result = pullDeps.walk(ast);
+const result = pullDeps.fromAST(acorn(`
+  import a from "esmdep";
+  const b = require("cjsdep");
+  import("dynamicESM");
+`));
 
-// Print to console the dependencies, which will have `amddep` and `cjsdep`
+// Print to console the dependencies, which will have `esmdep`, `cjsdep`, and `dynamicESM`.
 console.log(result.dependencies);
 ```
 
