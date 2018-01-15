@@ -24,14 +24,14 @@ if (files.length) {
 }
 else {
   processStream((dependencies) => {
-    var result = {}; result[path.join(process.cwd(), '/')] = dependencies;
+    var result = {}; result[path.join(process.cwd(), '/')] = { deps: dependencies };
     write(result);
   });
 }
 
 function processFiles (files) {
   return files.reduce(function (accumulator, file) {
-    accumulator[file] = pulldeps.fromSource(fs.readFileSync(file, 'utf8')).dependencies;
+    accumulator[file] = { deps: pulldeps.fromSource(fs.readFileSync(file, 'utf8')).dependencies };
     return accumulator;
   }, {});
 }
@@ -52,11 +52,11 @@ function processStream (cb) {
   });
 }
 
-function write (dependencies) {
+function write (entries) {
   const result = Object
-    .keys(dependencies)
-    .reduce((acc, dep) => {
-      acc[dep] = filterVendor(dependencies[dep]);
+    .keys(entries)
+    .reduce((acc, entry) => {
+      acc[entry] = { deps: filterVendor(entries[entry].deps) };
       return acc;
     }, {});
 
