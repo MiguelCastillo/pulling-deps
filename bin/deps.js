@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
+const path = require('path');
 const fs = require('fs');
-const pulldeps = require('../src/index');
 const glob = require('glob');
 const program = require('commander')
+const pulldeps = require('../src/index');
 
 function resolveGlob (value, items) {
   return items.concat([]
@@ -23,7 +24,7 @@ if (files.length) {
 }
 else {
   processStream((dependencies) => {
-    var result = { '$stdin': dependencies };
+    var result = {}; result[path.join(process.cwd(), '/')] = dependencies;
     write(result);
   });
 }
