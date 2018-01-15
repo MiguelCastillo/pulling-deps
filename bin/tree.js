@@ -21,13 +21,12 @@ program
 const files = program.files.concat(resolveGlob(program.args, []));
 
 if (files.length) {
-  const root = processFiles(files);
-  write(buildTree(root));
+  write(buildTree(processFiles(files)));
 }
 else {
   processStream((dependencies) => {
-    const root = {}; root[path.join(process.cwd(), '/')] = dependencies;
-    write(buildTree(root));
+    const result = {}; result[path.join(process.cwd(), '/')] = { deps: dependencies };
+    write(buildTree(result));
   });
 }
 
@@ -46,12 +45,14 @@ function buildTree (nodes) {
 
     visited[fullPath] = true;
 
-    var resolvedNodes = result[fullPath] = resolveNodes(result[fullPath], fullPath);
+    var resolvedNodes = result[fullPath].deps = resolveNodes(result[fullPath].deps, fullPath);
     var newNodes = processFiles(resolvedNodes.map(node => node.path));
     paths = paths.concat(Object.keys(newNodes));
     Object.assign(result, newNodes);
   }
 
+  // Make sure we tag the root modules.
+  Object.keys(nodes).forEach(item => (result[item].entry = true));
   return result;
 }
 
@@ -61,7 +62,9 @@ function resolveNodes (nodes, referrer) {
 
 function processFiles (files) {
   return files.reduce(function (accumulator, file) {
-    accumulator[file] = pulldeps.fromSource(fs.readFileSync(file, 'utf8')).dependencies;
+    accumulator[file] = {
+      deps: pulldeps.fromSource(fs.readFileSync(file, 'utf8')).dependencies
+    };
     return accumulator;
   }, {});
 }
