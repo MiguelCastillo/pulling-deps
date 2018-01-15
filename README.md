@@ -18,6 +18,9 @@ npm install pulling-deps
 
 ## cli
 
+To run the cli command directly in your console, you will need to install pulling-deps globally.  Alternatively, you can create npm scripts in your package json, or use npx.  Running npm scripts or npx are the preferred methods for using the CLI.
+
+
 - `pull-deps` which will extract the dependencies in the files you specify
 
 ```
