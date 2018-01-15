@@ -89,6 +89,6 @@ function getDirectory (path) {
   return path && path.replace(/([^/]+)$/gm, '');
 }
 
-function write (dependencies) {
-  process.stdout.write(JSON.stringify(dependencies));
+function write (entries) {
+  process.stdout.write(JSON.stringify(entries));
 }
