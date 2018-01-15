@@ -1,34 +1,37 @@
-var utils = require('belty');
-var acorn = require('acorn');
-var walk = require('acorn/dist/walk');
+const utils = require('belty');
+const walk = require('acorn/dist/walk');
+const acorn = require('acorn-dynamic-import/lib/inject').default(require('acorn'));
 
-var TokenTypes = {
+const TokenTypes = {
   Identifier: 'Identifier',
   Literal: 'Literal',
   ArrayExpression: 'ArrayExpression',
-  ImportDeclaration: 'ImportDeclaration'
+  ImportDeclaration: 'ImportDeclaration',
+  ImportExpression: 'Import'
 };
 
-var TokenNames = {
-  _define: 'define',
-  _require: 'require'
+const TokenNames = {
+  define: 'define',
+  require: 'require'
 };
 
 function isArrayExpession (node) {
   return node && TokenTypes.ArrayExpression === node.type;
 }
 
-function isName (node, name) {
+function nameEquals (node, name) {
   return TokenTypes.Identifier === node.type && name === node.name;
 }
 
 function getDependencyString (nodes) {
-  if (nodes.length === 1 && TokenTypes.Literal === nodes[0].type) {
-    return nodes[0].value;
-  }
+  return (
+    nodes
+      .filter(node => node.type === TokenTypes.Literal)
+      .map(node => node.value)
+  );
 }
 
-function getDependencyArray (nodes) {
+function getAMDDependencies (nodes) {
   var deps = (
     isArrayExpession(nodes[0]) ? nodes[0].elements : // Handle things like define([], function() {}) format
     isArrayExpession(nodes[1]) ? nodes[1].elements : [] // Handle things define("modulename", [], function() {}) format
@@ -39,32 +42,63 @@ function getDependencyArray (nodes) {
   });
 }
 
+function buildDependencyData (name, type, dynamic) {
+  return {
+    name: name,
+    dynamic: !!dynamic,
+    type: type
+  };
+}
+
+function ESMDependencyDynamic (name) {
+  return buildDependencyData(name, 'ESM', true);
+}
+
+function ESMDependencyStatic (name) {
+  return buildDependencyData(name, 'ESM', false);
+}
+
+function CJSDependency (name) {
+  return buildDependencyData(name, 'CJS', false);
+}
+
+function AMDDependency (name) {
+  return buildDependencyData(name, 'AMD', true);
+}
+
 /**
- * Method to pull dependencies from a JavaScript source string.
+ * Method to pull dependencies from a JavaScript source string
  *
- * @param {string} source - Source to parse
- * @param {object} options - Options passed to acorn
+ * @param {string | buffer} source - Source to pull dependencies from.
+ * @param {objecy} options - Options for processing dependencies as well as acorn options.
  *
  * @returns {object:{array: dependencies}} - Object with dependencies
  */
 function PullDeps (source, options) {
+  return PullDeps.fromSource(source, options);
+}
+
+/**
+ * Method to pull dependencies from a JavaScript source string
+ *
+ * @param {string | buffer} source - Source to pull dependencies from.
+ * @param {objecy} options - Options for processing dependencies as well as acorn options.
+ *
+ * @returns {object:{array: dependencies}} - Object with dependencies
+ */
+PullDeps.fromSource = function (source, options) {
   options = utils.merge({
+    esm: true,
     cjs: true,
     amd: true,
     options: {
-      sourceType: 'module'
+      sourceType: 'module',
+      plugins: { dynamicImport: true }
     }
   }, options);
 
-  // Make sure we search for require statements before we go in and tear things apart.
-  // if (source && /require\s*\(['"\s]+([^'"]+)['"\s]+\)\s*/g.test(source)) {
-  //   dependencies = PullDeps.walk(acorn.parse(source, options.options), options);
-  // }
-
-  return {
-    dependencies: PullDeps.walk(acorn.parse(source, options.options), options)
-  };
-}
+  return PullDeps.fromAST(acorn.parse(source.toString(), options.options), options);
+};
 
 /**
  * Method to pull dependencies from an AST.
@@ -73,17 +107,23 @@ function PullDeps (source, options) {
  *
  * @returns {object:{array: dependencies}} - Object with dependencies
  */
-PullDeps.walk = function (ast, options) {
+PullDeps.fromAST = function (ast, options) {
   var dependencies = [];
+  var esm = options.esm;
+  var cjs = options.cjs;
+  var amd = options.amd;
 
   function callExpression (node) {
     var deps;
 
-    if (options.cjs && isName(node.callee, TokenNames._require)) {
-      deps = getDependencyString(node.arguments);
+    if (esm && node.callee.type === TokenTypes.ImportExpression) {
+      deps = getDependencyString(node.arguments).map(ESMDependencyDynamic);
     }
-    else if (options.amd && isName(node.callee, TokenNames._define)) {
-      deps = getDependencyArray(node.arguments);
+    else if (cjs && nameEquals(node.callee, TokenNames.require)) {
+      deps = getDependencyString(node.arguments).map(CJSDependency);
+    }
+    else if (amd && nameEquals(node.callee, TokenNames.define)) {
+      deps = getAMDDependencies(node.arguments).map(AMDDependency);
     }
 
     if (deps && deps.length) {
@@ -91,18 +131,23 @@ PullDeps.walk = function (ast, options) {
     }
   }
 
-  function importStatement (node) {
+  function importDeclaration (node) {
     if (node.source.type === TokenTypes.Literal) {
-      dependencies.push(node.source.value);
+      dependencies.push(ESMDependencyStatic(node.source.value));
     }
   }
 
+  // Fill this in to prevent the walker from throwing when processing the 'Import' node
+  walk.base['Import'] = function (node, st, c) { };
+
   walk.simple(ast, {
     'CallExpression': callExpression,
-    'ImportDeclaration': importStatement
+    'ImportDeclaration': importDeclaration
   });
 
-  return dependencies;
+  return {
+    dependencies: dependencies
+  };
 };
 
 module.exports = PullDeps;
