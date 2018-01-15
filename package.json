@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "bin": {
-    "jsdeps": "./bin/cli.js"
+    "pull-deps": "./bin/deps.js",
+    "pull-vendor": "./bin/vendor.js"
   },
   "scripts": {
     "prepublish": "bitbundler",
@@ -16,7 +17,9 @@
   "dependencies": {
     "acorn": "~5.3.0",
     "acorn-dynamic-import": "^2.0.2",
-    "belty": "^5.2.1"
+    "belty": "^5.2.1",
+    "commander": "^2.13.0",
+    "glob": "^7.1.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
