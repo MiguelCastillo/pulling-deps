@@ -18,6 +18,46 @@ describe("Test suite", function() {
     });
   });
 
+  describe("When parsing a single dynamic `import` with `yield`", function() {
+    before(function() {
+      dependencies = pulldeps.fromSource(`
+        function* someFUNC() {
+          const b = yield import('module-name');
+        }
+      `).dependencies;
+    });
+
+    it("then dependencies length is `1`", function() {
+      expect(dependencies).to.have.lengthOf(1);
+    });
+
+    it("then dependencies[0] is `module-name`", function() {
+      expect(dependencies[0].name).to.equal("module-name");
+    });
+  });
+
+  describe("When parsing a single dynamic `import` with `async` and `await`", function() {
+    before(function() {
+      dependencies = pulldeps.fromSource(`
+        async function someFUNC() {
+          return await import('module-name');
+        }
+      `, {
+        options: {
+          ecmaVersion: 8
+        }
+      }).dependencies;
+    });
+
+    it("then dependencies length is `1`", function() {
+      expect(dependencies).to.have.lengthOf(1);
+    });
+
+    it("then dependencies[0] is `module-name`", function() {
+      expect(dependencies[0].name).to.equal("module-name");
+    });
+  });
+
   describe("When parsing a single `import` with the default named export ", function() {
     before(function() {
       dependencies = pulldeps("import test from 'test'").dependencies;
