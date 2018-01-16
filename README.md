@@ -21,7 +21,7 @@ npm install pulling-deps
 To run the cli command directly in your console, you will need to install pulling-deps globally.  Alternatively, you can create npm scripts in your package json, or use npx.  Running npm scripts or npx are the preferred methods for using the CLI.
 
 
-- `pull-deps` which will extract the dependencies in the files you specify
+### `pull-deps` which will extract the dependencies in the files you specify
 
 ```
 $ pull-deps src/*.js
@@ -31,7 +31,7 @@ $ pull-deps src/*.js
 $ echo "import('./src/index.js')" | pull-deps
 ```
 
-- `pull-vendor` which will extract only node module dependencies
+### `pull-vendor` which will extract only node module dependencies
 
 ```
 $ pull-vendor src/*.js
@@ -41,7 +41,7 @@ $ pull-vendor src/*.js
 $ echo "import('./src/index.js')" | pull-vendor
 ```
 
-- `pull-tree` which will generate a flat map of all the dependencies
+### `pull-tree` which will generate a flat map of all the dependencies
 
 ```
 $ pull-tree src/*.js
@@ -54,7 +54,7 @@ $ echo "import('./src/index.js')" | pull-tree
 
 ## api
 
-### pullDeps
+### pullDeps.fromSource
 is a method that takes in a JavaScript string source as the first parameter, and an optional object as the second paramter.  The second parameter is an object that is pass straight to [acorn](http://marijnhaverbeke.nl/acorn/).
 
 ```javascript
@@ -72,7 +72,7 @@ const result = pullDeps.fromSource(`
 console.log(result.dependencies);
 ```
 
-### pullDeps.walk
+### pullDeps.fromAST
 is a method that takes in as its only parameter an AST as created by acorn.
 
 ```javascript
