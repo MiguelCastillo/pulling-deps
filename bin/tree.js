@@ -36,8 +36,8 @@ function buildTree (nodes) {
 
     visited[fullPath] = true;
 
-    var resolvedNodes = result[fullPath].deps = resolveNodes(result[fullPath].deps, fullPath);
-    var newNodes = processFiles(resolvedNodes.map(node => node.path), program.source);
+    var resolvedDependencies = result[fullPath].deps = resolveDependencies(result[fullPath].deps, fullPath);
+    var newNodes = processFiles(resolvedDependencies.map(node => node.path), program.source);
     paths = paths.concat(Object.keys(newNodes));
     Object.assign(result, newNodes);
   }
@@ -47,8 +47,8 @@ function buildTree (nodes) {
   return result;
 }
 
-function resolveNodes (nodes, referrer) {
-  return nodes.map((node) => Object.assign({ path: resolve.sync(node.name, { basedir: getDirectory(referrer) }) }, node));
+function resolveDependencies (dependencies, referrer) {
+  return dependencies.map((node) => Object.assign({ path: resolve.sync(node.name, { basedir: getDirectory(referrer) }) }, node));
 }
 
 function getDirectory (path) {
