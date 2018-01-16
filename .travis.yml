@@ -1,12 +1,10 @@
 language: node_js
 node_js:
-  - "4"
-before_install:
-  - npm install -g grunt-cli
+- "4"
 deploy:
   provider: releases
   api_key:
-    secure: i06SARu4O4mFhwaNfVvD44pRHGHFUYS8N9GAqg3JulEWPTiDFZ5IMxi2/3ReFTVQPXIq3AuEPH3qd0lTDC1iVn4+wST4qp1bDVfJCMmMXvwANOEao3w9W5zkxoTPDaz+P64EOMzeAIDwEudv5tg5BrDh3H90R0V4WuHHvUTWcCA=
+    secure: BtPZcCuIxbEcSd+8y4DV2oQDDXlWYOWv8Fe+vkQVyuTLAWabYJPc3WCfJnma+q10W6x7rxfIJGi1EaLMkqrUKkQaJxZNscPnFy+0qLwCuBnVPrJZk1Acj82/3QShtCwMFmOG3nOIEb3As0+lHwpiXeQX2KFM49pxQtHp4bcW/VA=
   file:
     - "dist/index.js"
     - "dist/index.js.map"
