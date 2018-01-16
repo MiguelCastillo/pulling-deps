@@ -18,27 +18,37 @@ npm install pulling-deps
 
 ## cli
 
-pulling-deps comes with a small cli that prints all the dependencies in a JavaScript file. The focus is on printing modules that are processed as node module dependencies.  E.g. `require('path')` vs `require('./index.js')`.
-
-> The cli will remove duplicate dependencies from the output
+To run the cli command directly in your console, you will need to install pulling-deps globally.  Alternatively, you can create npm scripts in your package json, or use npx.  Running npm scripts or npx are the preferred methods for using the CLI.
 
 
-### extracts dependencies from a file. You can pass multiple files
+- `pull-deps` which will extract the dependencies in the files you specify
 
 ```
-$ jsdeps -f src/*.js
+$ pull-deps src/*.js
 ```
 
-### pipe file content
-
 ```
-$ cat src/*.js | jsdeps
+$ echo "import('./src/index.js')" | pull-deps
 ```
 
-### npm install dependencies in a file
+- `pull-vendor` which will extract only node module dependencies
 
 ```
-$ npm install --save `jsdeps -f src/*.js`
+$ pull-vendor src/*.js
+```
+
+```
+$ echo "import('./src/index.js')" | pull-vendor
+```
+
+- `pull-tree` which will generate a flat map of all the dependencies
+
+```
+$ pull-tree src/*.js
+```
+
+```
+$ echo "import('./src/index.js')" | pull-tree
 ```
 
 

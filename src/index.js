@@ -123,7 +123,9 @@ PullDeps.fromAST = function (ast, options) {
       deps = getDependencyString(node.arguments).map(CJSDependency);
     }
     else if (amd && nameEquals(node.callee, TokenNames.define)) {
-      deps = getAMDDependencies(node.arguments).map(AMDDependency);
+      deps = getAMDDependencies(node.arguments).map(AMDDependency).filter(function (dep) {
+        return dep.name !== 'require' && dep.name !== 'exports' && dep.name !== 'module';
+      });
     }
 
     if (deps && deps.length) {
