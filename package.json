@@ -37,7 +37,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "~5.2.0",
     "pakit": "^1.0.1",
-    "sinon": "~4.4.0"
+    "sinon": "~5.0.0"
   },
   "browser": {},
   "directories": {
