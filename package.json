@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "acorn": "~5.7.0",
-    "acorn-dynamic-import": "^3.0.0",
+    "acorn-dynamic-import": "^4.0.0",
     "belty": "^5.2.1",
     "commander": "^2.13.0",
     "glob": "^7.1.2",
