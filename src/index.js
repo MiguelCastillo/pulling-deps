@@ -1,6 +1,7 @@
 const utils = require('belty');
-const walk = require('acorn/dist/walk');
-const acorn = require('acorn-dynamic-import/lib/inject').default(require('acorn'));
+const walk = require('acorn-walk');
+const dynamicImportPlugin = require('acorn-dynamic-import').default;
+const acorn = require('acorn').Parser.extend(dynamicImportPlugin);
 
 const TokenTypes = {
   Identifier: 'Identifier',
