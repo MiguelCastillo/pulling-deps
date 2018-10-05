@@ -1,7 +1,8 @@
 const path = require('path');
+const transformRunner = require('../src/transformRunner');
 const pulldeps = require('../src/index');
 
-module.exports = function processStream (cb, includeSource) {
+module.exports = function processStream (cb, includeSource, tranform) {
   var source = '';
 
   process.stdin
@@ -15,7 +16,8 @@ module.exports = function processStream (cb, includeSource) {
     .on('end', () => {
       const result = {};
       const cwd = path.join(process.cwd(), '/');
-      const deps = pulldeps.fromSource(source).dependencies;
+      const transformedSource = transformRunner(tranform, source);
+      const deps = pulldeps.fromSource(transformedSource).dependencies;
 
       result[cwd] = { deps: deps };
 
