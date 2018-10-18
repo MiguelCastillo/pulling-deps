@@ -2,7 +2,7 @@ const path = require('path');
 const transformRunner = require('../src/transformRunner');
 const pulldeps = require('../src/index');
 
-module.exports = function processStream (cb, includeSource, tranform) {
+module.exports = function processStream (cb, {includeSource, tranform}) {
   var source = '';
 
   process.stdin

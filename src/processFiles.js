@@ -1,15 +1,15 @@
 const fs = require('fs');
 const transformRunner = require('./transformRunner');
-const ignoreRunner = require('./ignoreRunner');
+const skipRunner = require('./skipRunner');
 const pulldeps = require('./index');
 const builtins = require('./builtins');
 
-function processFiles(files, transform, ignore) {
+function processFiles(files, options) {
   return files
     .map(toFileObject)
-    .filter(file => !builtins[file.path])
+    .filter(file => file.path)
     .reduce((accumulator, file) => {
-      const {deps, source, transformed} = build(file, transform, ignore);
+      const {deps, source, transformed} = build(file, options);
 
       accumulator[file.path] = {
         deps,
@@ -21,10 +21,14 @@ function processFiles(files, transform, ignore) {
     }, {});
 }
 
-function build(file, transform, ignore) {
+function build(file, {transform, skipTransforms, skipDependencies, includeSource}) {
+  if (!file.path) {
+    return {};
+  }
+
   const source = fs.readFileSync(file.path, 'utf8');
-  const transformed = transformRunner(transform, source, file);
-  const deps = ignoreRunner(ignore, file) ? [] : pulldeps.fromSource(transformed).dependencies;
+  const transformed = skipRunner(skipTransforms, file) ? source : transformRunner(transform, source, file);
+  const deps = skipRunner(skipDependencies, file) ? [] : pulldeps.fromSource(transformed).dependencies;
 
   return {
     source,
@@ -34,7 +38,7 @@ function build(file, transform, ignore) {
 };
 
 function toFileObject(file) {
-  return typeof file === "string" ? {
+  return typeof file === 'string' ? {
     path: file,
     name: file
   } : {
