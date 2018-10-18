@@ -30,11 +30,18 @@ function build(file, {transform, skipTransforms, skipDependencies, includeSource
   const transformed = skipRunner(skipTransforms, file) ? source : transformRunner(transform, source, file);
   const deps = skipRunner(skipDependencies, file) ? [] : pulldeps.fromSource(transformed).dependencies;
 
-  return {
-    source,
-    transformed,
-    deps
-  };
+  if (includeSource) {
+    return {
+      source,
+      transformed,
+      deps
+    };
+  }
+  else {
+    return {
+      deps
+    };
+  }
 };
 
 function toFileObject(file) {
