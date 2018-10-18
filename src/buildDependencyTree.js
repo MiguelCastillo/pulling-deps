@@ -14,6 +14,13 @@ function buildDependencyTree(nodes, options) {
     const referrer = stack[stackItem.referrerIndex];
     const fullPath = stackItem.path;
 
+    // This handles the situation when a module has been tagged
+    // to be skipped.  So we will just jump to the next item in
+    // the stack.
+    if (!fullPath) {
+      continue;
+    }
+
     // Item has already been processed. No need to process again.
     if (visited[fullPath]) {
       result[fullPath].referrer[referrer.path] = true;
@@ -40,7 +47,7 @@ function buildDependencyTree(nodes, options) {
     try {
       deps = resolveDependencies(result[fullPath].deps,
         fullPath,
-        options.resolver);
+        options);
 
       // Add the dependencies early to the stack to that we can do more easily
       // build the tree of what is currently being processed in case a failure
@@ -62,7 +69,7 @@ function buildDependencyTree(nodes, options) {
       try {
         // Parse file for all the data we need.
         if (!result[dep.path]) {
-          result[dep.path] = processFiles.build(dep, options.transform, options.ignore);
+          result[dep.path] = processFiles.build(dep, options);
         }
       }
       catch(e) {
