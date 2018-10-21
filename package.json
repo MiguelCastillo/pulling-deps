@@ -1,6 +1,6 @@
 {
   "name": "pulling-deps",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "main": "dist/index.js",
   "bin": {
     "pull-deps": "./bin/deps.js",
