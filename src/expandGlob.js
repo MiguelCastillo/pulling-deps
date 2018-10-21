@@ -1,8 +1,10 @@
 const glob = require('glob');
 
-module.exports = function expandGlob(value, items) {
-  return (items || []).concat([]
-    .concat(value)
-    .reduce((acc, val) => acc.concat(glob.sync(val, { cwd: process.cwd(), realpath: true })), [])
-  );
+module.exports = function expandGlob(values, items) {
+  const allPaths = [].concat(values).map(value => glob.sync(value, { cwd: process.cwd(), realpath: true }));
+  return (items || []).concat(flatten(allPaths));
 };
+
+function flatten(items) {
+  return items.reduce((acc, item) => acc.concat(item), []);
+}
