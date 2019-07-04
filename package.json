@@ -16,7 +16,7 @@
     "node": ">=4"
   },
   "dependencies": {
-    "acorn": "~6.0.2",
+    "acorn": "~6.2.0",
     "acorn-dynamic-import": "^4.0.0",
     "acorn-walk": "^6.1.0",
     "belty": "^5.2.1",
